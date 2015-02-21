@@ -1,11 +1,10 @@
 #include <iostream>
-#include <string>
 
 #define LOCALHOST "127.0.0.1 "
 
 int main( int argc, char *argv[] ) {
 
-	char fileName[50];
+	char *fileName;
 	scanf_s( "%s", fileName, 50 );
 
 	FILE *fileToOpen;
