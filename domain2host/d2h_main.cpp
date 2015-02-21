@@ -5,7 +5,7 @@
 int main( int argc, char *argv[] ) {
 
 	char *fileName;
-	scanf_s( "%s", fileName, 50 );
+	scanf_s( "%s", fileName );
 
 	FILE *fileToOpen;
 	fileToOpen = fopen( fileName, "r" );
