@@ -1,33 +1,50 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 
 #define LOCALHOST "127.0.0.1 "
 
+using namespace std;
+
 int main( int argc, char *argv[] ) {
 
-	char *fileName;
-	scanf_s( "%s", fileName );
+	string inputFileName, ouputFileName;
 
-	FILE *fileToOpen;
-	fileToOpen = fopen( fileName, "r" );
-	if (fileToOpen == NULL) {
+	if (argc > 3) {
+		cout << "Too much arguments!\n";
+		return 0;
+	} else if (argc == 3) {
+		ouputFileName = argv[2];
+		inputFileName = argv[1];
+	} else if (argc == 2) {
+		inputFileName = argv[1];
+		cout << "Insert name of file to save into: ";
+		cin >> ouputFileName;
+	} else if (argc <= 1) {
+		cout << "Insert name of file to read from: ";
+		cin >> inputFileName;
+		cout << "Insert name of file to save into: ";
+		cin >> ouputFileName;
+	}
+
+	ifstream inputFile;
+	inputFile.open( inputFileName, ios::in );
+
+	if ( !inputFile.is_open() ) {
 		perror( "error opening file\n" );
 	} else {
-		char *buffer;
-		FILE *newFile;
-		newFile = fopen( "edited.txt", "w+" );
-		if (newFile == NULL) {
+		ofstream outputFile;
+		outputFile.open( ouputFileName, ios::out );
+		if ( !outputFile.is_open() ) {
 			perror( "error creating file\n" );
 		} else {
-			while (!feof( fileToOpen )) {
-				if (fgets( buffer, 100, fileToOpen ) == NULL) {
-					break;
-				}
-				fputs( LOCALHOST, newFile );
-				fputs( buffer, newFile );
+			string domainName;
+			while (getline( inputFile, domainName )) {
+				outputFile << LOCALHOST << domainName << '\n';
 			}
-			fclose( newFile );
+			outputFile.close();
 		}
-		fclose( fileToOpen );
+		inputFile.close();
 	}
 
 	return 0;
