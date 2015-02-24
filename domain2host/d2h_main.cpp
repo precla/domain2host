@@ -2,50 +2,53 @@
 #include <fstream>
 #include <string>
 
-#define LOCALHOST "127.0.0.1 "
+#define LOCALHOST "127.0.0.1"
 
 using namespace std;
 
+void addCustomHostToDomain( char **, string );
+
 int main( int argc, char *argv[] ) {
 
-	string inputFileName, ouputFileName;
-
-	if (argc > 3) {
-		cout << "Too much arguments!\n";
-		return 0;
-	} else if (argc == 3) {
-		ouputFileName = argv[2];
-		inputFileName = argv[1];
-	} else if (argc == 2) {
-		inputFileName = argv[1];
-		cout << "Insert name of file to save into: ";
-		cin >> ouputFileName;
-	} else if (argc <= 1) {
-		cout << "Insert name of file to read from: ";
-		cin >> inputFileName;
-		cout << "Insert name of file to save into: ";
-		cin >> ouputFileName;
-	}
-
-	ifstream inputFile;
-	inputFile.open( inputFileName, ios::in );
-
-	if ( !inputFile.is_open() ) {
-		perror( "error opening file\n" );
-	} else {
-		ofstream outputFile;
-		outputFile.open( ouputFileName, ios::out );
-		if ( !outputFile.is_open() ) {
-			perror( "error creating file\n" );
+	if (argc < 4) {
+		cout << "Not enough parameters" << endl;
+	} else if (argc >= 4) {
+		string customHostAddress;
+		if ( argv[1] == "0" ) {
+			customHostAddress = LOCALHOST;
 		} else {
-			string domainName;
-			while (getline( inputFile, domainName )) {
-				outputFile << LOCALHOST << domainName << '\n';
-			}
-			outputFile.close();
+			customHostAddress = argv[1];
 		}
-		inputFile.close();
+		addCustomHostToDomain( argv, customHostAddress );
 	}
 
 	return 0;
+}
+
+void addCustomHostToDomain( char **argList, string _customHostAddress ) {
+	
+	ofstream outputFile;
+	outputFile.open( argList[2], ios::out );
+	if ( !outputFile.is_open() ) {
+		perror( "error opening file\n" );
+	} else {
+		unsigned int n = 3;
+		do {
+			ifstream inputFile;
+			inputFile.open( argList[n], ios::in );
+
+			if ( !inputFile.is_open() ) {
+				perror( "error opening input file!\n" );
+			} else {
+				string domainName;
+				while ( getline( inputFile, domainName ) ) {
+					//TODO: add regex to read only domains or ip addresses
+					outputFile << _customHostAddress << " " << domainName << '\n';
+				}
+				inputFile.close();
+			}
+		} while ( argList[++n] != NULL );
+		outputFile << "## This host file has been created with domain2host";
+		outputFile.close();
+	}
 }
