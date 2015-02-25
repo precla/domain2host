@@ -1,0 +1,125 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include "functions.h"
+
+#define FIRST_INPUT_FILE_IN_ARGUMENTLIST 3
+#define FIREFOX_BOOKMARK_FILE "bookmarks.html"
+#define TXT_BEFORE_LINK "<DT><A HREF=\""
+#define TXT_BEFORE_LINK_LENGHT 13
+
+using namespace std;
+
+void addCustomHostToDomain( char **argList, string _customHostAddress ) {
+
+	ofstream outputFile;
+	outputFile.open( argList[2], ios::out | ios::app );
+	if ( outputFile.is_open() ) {
+		unsigned int n = FIRST_INPUT_FILE_IN_ARGUMENTLIST;
+		do {
+			//if next item is bookmarks.html then call the function bookmarksToHostFile()
+			if ( !_strcmpi( argList[n], FIREFOX_BOOKMARK_FILE ) ) {
+				bookmarksToHostFile( outputFile, argList[n], _customHostAddress );
+			} else {
+
+				ifstream inputFile;
+				inputFile.open( argList[n], ios::in );
+
+				if ( !inputFile.is_open() ) {
+					perror( "error creating input file!\n" );
+				} else {
+					string domainName;
+					while ( getline( inputFile, domainName ) ) {
+						domainName = cleanStringsFromUselessContent( domainName );
+						outputFile << _customHostAddress << " " << domainName << '\n';
+					}
+					inputFile.close();
+				}
+			}
+		} while ( argList[++n] != NULL );
+		outputFile << "\n## This host file has been created with domain2host\n";
+		outputFile.close();
+	} else {
+		perror( "error creating output file\n" );
+	}
+}
+
+void bookmarksToHostFile( ofstream &_outputFile, string _bookmarksFile, string _customHostAddress ) {
+
+	ifstream ffBookmarkFile;
+	ffBookmarkFile.open( FIREFOX_BOOKMARK_FILE, ios::in );
+
+	if ( ffBookmarkFile.is_open() ) {
+		_outputFile << "\n## This part is from the firefox bookmarks.html file\n";
+		string domainName;
+		vector<string> checkDoubles;
+		bool foundDouble;
+
+		while ( getline( ffBookmarkFile, domainName ) ) {
+
+			/*
+			read line by line and search for:
+			<DT><A HREF="
+			read into string until closing "
+			*/
+
+			if ( !( domainName.find( TXT_BEFORE_LINK ) > domainName.length() ) ) {
+				domainName = domainName.substr( domainName.find( TXT_BEFORE_LINK ) + TXT_BEFORE_LINK_LENGHT, domainName.length() - domainName.find( "\"" ) );
+				domainName = domainName.substr( 0, domainName.find( "\"" ) );
+
+				domainName = cleanStringsFromUselessContent( domainName );
+
+				//check for duplicate before saving it to new file:
+
+				foundDouble = false;
+
+				for ( auto &currString : checkDoubles ) {
+					if ( currString == domainName ) {
+						foundDouble = true;
+						break;
+					}
+				}
+				checkDoubles.push_back( domainName );
+				if ( !foundDouble ) {
+					_outputFile << _customHostAddress << " " << domainName << '\n';
+				}
+			}
+		}
+
+		_outputFile << "\n## End of bookmarks.html content\n";
+		ffBookmarkFile.close();
+	} else {
+		perror( "error reading file 'bookmarks.html'\n" );
+	}
+}
+
+string cleanStringsFromUselessContent( string domainNameToClean ) {
+
+	if ( !( domainNameToClean.find( "ftp://" ) > domainNameToClean.length() ) ) {
+		domainNameToClean = domainNameToClean.erase( 0, 6 );
+	} else if ( !( domainNameToClean.find( "ftps://" ) > domainNameToClean.length() ) ) {
+		domainNameToClean = domainNameToClean.erase( 0, 7 );
+	} else if ( !( domainNameToClean.find( "http://" ) > domainNameToClean.length() ) ) {
+		domainNameToClean = domainNameToClean.erase( 0, 7 );
+	} else if ( !( domainNameToClean.find( "https://" ) > domainNameToClean.length() ) ) {
+		domainNameToClean = domainNameToClean.erase( 0, 8 );
+	}
+
+	if ( !( domainNameToClean.find( "www." ) > domainNameToClean.length() ) ) {
+		domainNameToClean = domainNameToClean.erase( 0, 4 );
+	}
+
+	//remove / after TLD
+	if ( !( domainNameToClean.find_last_of( "/" ) > domainNameToClean.length() ) ) {
+		size_t found = domainNameToClean.find_first_of( "/" );
+		domainNameToClean = domainNameToClean.substr( 0, found );
+	}
+	//remove custom port
+	if ( !( domainNameToClean.find_last_of( ":" ) > domainNameToClean.length() ) ) {
+		size_t found = domainNameToClean.find_first_of( ":" );
+		domainNameToClean = domainNameToClean.substr( 0, found );
+	}
+
+	return domainNameToClean;
+}
