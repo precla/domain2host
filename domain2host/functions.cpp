@@ -30,9 +30,15 @@ void addCustomHostToDomain( char **argList, string _customHostAddress ) {
 					perror( "error creating input file!\n" );
 				} else {
 					string domainName;
+					vector<string> checkDoubles;
 					while ( getline( inputFile, domainName ) ) {
 						domainName = cleanStringsFromUselessContent( domainName );
-						outputFile << _customHostAddress << " " << domainName << '\n';
+						//just in case it grabs a empty line:
+						if ( domainName == "" ) {
+							continue;
+						} else if ( !checkForDoubleDomain( domainName, checkDoubles ) ) {
+							outputFile << _customHostAddress << " " << domainName << '\n';
+						}
 					}
 					inputFile.close();
 				}
@@ -54,7 +60,7 @@ void bookmarksToHostFile( ofstream &_outputFile, string _bookmarksFile, string _
 		_outputFile << "\n## This part is from the firefox bookmarks.html file\n";
 		string domainName;
 		vector<string> checkDoubles;
-		bool foundDouble;
+		/*bool foundDouble;*/
 
 		while ( getline( ffBookmarkFile, domainName ) ) {
 
@@ -67,21 +73,9 @@ void bookmarksToHostFile( ofstream &_outputFile, string _bookmarksFile, string _
 			if ( !( domainName.find( TXT_BEFORE_LINK ) > domainName.length() ) ) {
 				domainName = domainName.substr( domainName.find( TXT_BEFORE_LINK ) + TXT_BEFORE_LINK_LENGHT, domainName.length() - domainName.find( "\"" ) );
 				domainName = domainName.substr( 0, domainName.find( "\"" ) );
-
 				domainName = cleanStringsFromUselessContent( domainName );
 
-				//check for duplicate before saving it to new file:
-
-				foundDouble = false;
-
-				for ( auto &currString : checkDoubles ) {
-					if ( currString == domainName ) {
-						foundDouble = true;
-						break;
-					}
-				}
-				checkDoubles.push_back( domainName );
-				if ( !foundDouble ) {
+				if ( !checkForDoubleDomain( domainName, checkDoubles ) ) {
 					_outputFile << _customHostAddress << " " << domainName << '\n';
 				}
 			}
@@ -115,6 +109,11 @@ string cleanStringsFromUselessContent( string domainNameToClean ) {
 		size_t found = domainNameToClean.find_first_of( "/" );
 		domainNameToClean = domainNameToClean.substr( 0, found );
 	}
+	//remove whitespace after TLD
+	if ( !( domainNameToClean.find_last_of( " " ) > domainNameToClean.length() ) ) {
+		size_t found = domainNameToClean.find_first_of( " " );
+		domainNameToClean = domainNameToClean.substr( 0, found );
+	}
 	//remove custom port
 	if ( !( domainNameToClean.find_last_of( ":" ) > domainNameToClean.length() ) ) {
 		size_t found = domainNameToClean.find_first_of( ":" );
@@ -122,4 +121,19 @@ string cleanStringsFromUselessContent( string domainNameToClean ) {
 	}
 
 	return domainNameToClean;
+}
+
+bool checkForDoubleDomain( string domainNameToCheckDouble, vector<string> &checkDoubles ) {
+	//check for duplicate before saving it to new file:
+
+	bool foundDouble = false;
+
+	for ( auto &currString : checkDoubles ) {
+		if ( currString == domainNameToCheckDouble ) {
+			foundDouble = true;
+			break;
+		}
+	}
+	checkDoubles.push_back( domainNameToCheckDouble );
+	return foundDouble;
 }

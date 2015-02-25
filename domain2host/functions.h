@@ -1,5 +1,8 @@
 #pragma once
 
-void addCustomHostToDomain( char **, std::string );
-void bookmarksToHostFile( std::ofstream &, std::string, std::string );
-std::string cleanStringsFromUselessContent( std::string );
+using namespace std;
+
+void addCustomHostToDomain( char **, string );
+void bookmarksToHostFile( ofstream &, string, string );
+string cleanStringsFromUselessContent( string );
+bool checkForDoubleDomain( string, vector<string> & );
