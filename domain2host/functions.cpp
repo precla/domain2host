@@ -13,8 +13,8 @@ using namespace std;
 
 void addCustomHostToDomain( char **argList, string _customHostAddress ) {
 
-	ofstream outputFile;
-	outputFile.open( argList[2], ios::out | ios::app );
+	ofstream outputFile( argList[2], ios::out | ios::app );
+
 	if ( outputFile.is_open() ) {
 		unsigned int n = FIRST_INPUT_FILE_IN_ARGUMENTLIST;
 		do {
@@ -23,8 +23,7 @@ void addCustomHostToDomain( char **argList, string _customHostAddress ) {
 				bookmarksToHostFile( outputFile, argList[n], _customHostAddress );
 			} else {
 
-				ifstream inputFile;
-				inputFile.open( argList[n], ios::in );
+				ifstream inputFile( argList[n], ios::in );
 
 				if ( !inputFile.is_open() ) {
 					perror( "error creating input file!\n" );
@@ -53,14 +52,12 @@ void addCustomHostToDomain( char **argList, string _customHostAddress ) {
 
 void bookmarksToHostFile( ofstream &_outputFile, string _bookmarksFile, string _customHostAddress ) {
 
-	ifstream ffBookmarkFile;
-	ffBookmarkFile.open( FIREFOX_BOOKMARK_FILE, ios::in );
+	ifstream ffBookmarkFile( FIREFOX_BOOKMARK_FILE, ios::in );
 
 	if ( ffBookmarkFile.is_open() ) {
 		_outputFile << "\n## This part is from the firefox bookmarks.html file\n";
 		string domainName;
 		vector<string> checkDoubles;
-		/*bool foundDouble;*/
 
 		while ( getline( ffBookmarkFile, domainName ) ) {
 
