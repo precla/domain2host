@@ -31,8 +31,6 @@ using namespace std;
 
 int main( int argc, char *argv[] ) {
 
-	long int before, after;
-
 	if ( argc < MIN_NUMBER_OF_ARGUMENTS ) {
 		cout << "Not enough parameters!\n" << endl;
 	} else if ( argc >= MIN_NUMBER_OF_ARGUMENTS ) {
