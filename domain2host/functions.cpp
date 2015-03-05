@@ -131,6 +131,10 @@ bool checkForDoubleDomain( string domainNameToCheckDouble, vector<string> &check
 			break;
 		}
 	}
-	checkDoubles.push_back( domainNameToCheckDouble );
+	//push_back only if the domainNameToCheckDouble is not already in vector checkDoubles
+	if ( !foundDouble ) {
+		checkDoubles.push_back( domainNameToCheckDouble );
+	}
+	
 	return foundDouble;
 }

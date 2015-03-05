@@ -19,22 +19,23 @@
 */
 
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 
 #include "functions.h"
 
-#define MIN_NUMBERS_OF_ARGUMENTS 4
+#define MIN_NUMBER_OF_ARGUMENTS 4
 #define LOCALHOST "127.0.0.1"
 
 using namespace std;
 
 int main( int argc, char *argv[] ) {
 
-	if ( argc < MIN_NUMBERS_OF_ARGUMENTS ) {
-		cout << "Not enough parameters\n" << endl;
-	} else if ( argc >= MIN_NUMBERS_OF_ARGUMENTS ) {
+	long int before, after;
+
+	if ( argc < MIN_NUMBER_OF_ARGUMENTS ) {
+		cout << "Not enough parameters!\n" << endl;
+	} else if ( argc >= MIN_NUMBER_OF_ARGUMENTS ) {
 		string customHostAddress;
 		if ( argv[1] == "0" ) {
 			customHostAddress = LOCALHOST;
