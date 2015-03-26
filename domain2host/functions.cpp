@@ -33,7 +33,7 @@ void addCustomHostToDomain( char **argList, const string &_customHostAddress ) {
 					while ( getline( inputFile, domainName ) ) {
 						domainName = cleanStringsFromUselessContent( domainName );
 						//just in case it grabs a empty line:
-						if ( domainName == "" ) {
+						if ( domainName.empty() ) {
 							continue;
 						} else if ( !checkForDoubleDomain( domainName, checkDoubles ) ) {
 							outputFile << _customHostAddress << " " << domainName << '\n';
