@@ -35,7 +35,7 @@ int main( int argc, char *argv[] ) {
 		cout << "Not enough parameters!\n" << endl;
 	} else if ( argc >= MIN_NUMBER_OF_ARGUMENTS ) {
 		string customHostAddress;
-		if ( argv[1] == "0" ) {
+		if ( !strcmp(argv[1], "0") ) {
 			customHostAddress = LOCALHOST;
 		} else {
 			customHostAddress = argv[1];
