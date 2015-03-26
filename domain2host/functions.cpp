@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void addCustomHostToDomain( char **argList, string _customHostAddress ) {
+void addCustomHostToDomain( char **argList, const string &_customHostAddress ) {
 
 	ofstream outputFile( argList[2], ios::out | ios::app );
 
@@ -50,7 +50,7 @@ void addCustomHostToDomain( char **argList, string _customHostAddress ) {
 	}
 }
 
-void bookmarksToHostFile( ofstream &_outputFile, string _bookmarksFile, string _customHostAddress ) {
+void bookmarksToHostFile( ofstream &_outputFile, string _bookmarksFile, const string &_customHostAddress ) {
 
 	ifstream ffBookmarkFile( FIREFOX_BOOKMARK_FILE, ios::in );
 
@@ -120,7 +120,7 @@ string cleanStringsFromUselessContent( string domainNameToClean ) {
 	return domainNameToClean;
 }
 
-bool checkForDoubleDomain( string domainNameToCheckDouble, vector<string> &checkDoubles ) {
+bool checkForDoubleDomain( const string &domainNameToCheckDouble, vector<string> &checkDoubles ) {
 	//check for duplicate before saving it to new file:
 
 	bool foundDouble = false;

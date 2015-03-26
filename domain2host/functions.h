@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void addCustomHostToDomain( char **, string );
-void bookmarksToHostFile( ofstream &, string, string );
+void addCustomHostToDomain( char **, const string & );
+void bookmarksToHostFile( ofstream &, string, const string & );
 string cleanStringsFromUselessContent( string );
-bool checkForDoubleDomain( string, vector<string> & );
+bool checkForDoubleDomain( const string &, vector<string> & );
