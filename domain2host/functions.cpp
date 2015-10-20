@@ -20,7 +20,7 @@ void addCustomHostToDomain( char **argList, const string &_customHostAddress ) {
 		do {
 			//if next item is bookmarks.html then call the function bookmarksToHostFile()
 			if ( !_strcmpi( argList[n], FIREFOX_BOOKMARK_FILE ) ) {
-				bookmarksToHostFile( outputFile, argList[n], _customHostAddress );
+				bookmarksToHostFile( outputFile, _customHostAddress );
 			} else {
 
 				ifstream inputFile( argList[n], ios::in );
@@ -50,9 +50,9 @@ void addCustomHostToDomain( char **argList, const string &_customHostAddress ) {
 	}
 }
 
-void bookmarksToHostFile( ofstream &_outputFile, string _bookmarksFile, const string &_customHostAddress ) {
+void bookmarksToHostFile( ofstream &_outputFile, const string &_customHostAddress ) {
 
-	ifstream ffBookmarkFile( FIREFOX_BOOKMARK_FILE, ios::in );
+	ifstream ffBookmarkFile( FIREFOX_BOOKMARK_FILE );
 
 	if ( ffBookmarkFile.is_open() ) {
 		_outputFile << "\n## This part is from the firefox bookmarks.html file\n";
