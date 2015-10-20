@@ -125,7 +125,7 @@ bool checkForDoubleDomain( const string &domainNameToCheckDouble, vector<string>
 
 	bool foundDouble = false;
 
-	for ( auto &currString : checkDoubles ) {
+	for ( const auto &currString : checkDoubles ) {
 		if ( currString == domainNameToCheckDouble ) {
 			foundDouble = true;
 			break;
