@@ -70,7 +70,7 @@ void bookmarksToHostFile( ofstream &_outputFile, const string &_customHostAddres
 			if ( !( domainName.find( TXT_BEFORE_LINK ) > domainName.length() ) ) {
 				domainName = domainName.substr( domainName.find( TXT_BEFORE_LINK ) + TXT_BEFORE_LINK_LENGHT, domainName.length() - domainName.find( "\"" ) );
 				domainName = domainName.substr( 0, domainName.find( "\"" ) );
-				domainName = cleanStringsFromUselessContent( domainName );
+				cleanStringsFromUselessContent( domainName );
 
 				if ( !checkForDoubleDomain( domainName, checkDoubles ) ) {
 					_outputFile << _customHostAddress << " " << domainName << '\n';
@@ -85,7 +85,7 @@ void bookmarksToHostFile( ofstream &_outputFile, const string &_customHostAddres
 	}
 }
 
-string cleanStringsFromUselessContent( string domainNameToClean ) {
+string cleanStringsFromUselessContent( string &domainNameToClean ) {
 
 	if ( !( domainNameToClean.find( "ftp://" ) > domainNameToClean.length() ) ) {
 		domainNameToClean = domainNameToClean.erase( 0, 6 );
