@@ -15,7 +15,7 @@ supports multiple files to read from (including exported firefox bookmarks), and
 It checks for double domains and if a domain has already ben added, it skips it.
 
 ###TO DO:
--make it possible to read from a file where domains are not separated in lines but with commas (or anything similiar)
+-make it possible to read from a file where domains are not separated in lines but with commas (or anything similar)
 -append to current host file 
 
 ###DONE:
